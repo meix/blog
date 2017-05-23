@@ -1,8 +1,8 @@
 package controllers
 
 import (
+	_ "blog/helpers"
 	. "blog/models"
-	"fmt"
 	"github.com/astaxie/beego"
 	"github.com/astaxie/beego/orm"
 	"github.com/astaxie/beego/utils/pagination"
@@ -14,8 +14,6 @@ type HomeController struct {
 }
 
 func (this *HomeController) Index() {
-
-	fmt.Println("当前用户是否登陆：", this.isLogin)
 
 	page, page_err := this.GetInt("p")
 	if page_err != nil {

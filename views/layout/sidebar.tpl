@@ -55,7 +55,6 @@
     color: #ccc
   }
 
-
 </style>
 
 
@@ -74,7 +73,12 @@
       <li><a href="#">分类</a></li>
       <li><a href="#">精选</a></li>
       <li><a href="#">关于</a></li>
-      <li><a href="/login">登陆</a></li>
+      {{ if $.isLogin }}
+        <li><a href="/article/personal">我的</a></li>
+        <li><a href="/signout">退出</a></li>
+      {{ else }}
+        <li><a href="/login">登陆</a></li>
+      {{ end }}
     </ul>  
   </div>
 </div>

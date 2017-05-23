@@ -6,6 +6,7 @@
   <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
   <link rel="stylesheet" type="text/css" href="/static/css/bootstrap.min.css">
   <link rel="stylesheet" type="text/css" href="/static/css/bootstrap-theme.min.css">
+  <link rel="stylesheet" type="text/css" href="/static/css/medium-editor.min.css">
 
   <script src="/static/js/jquery.min.js"></script>
 
@@ -55,7 +56,9 @@
   
   <script src="/static/js/bootstrap.min.js"></script>
   <script src="/static/js/jquery.validate.js"></script>
-  <!-- <script src="/static/js/user.js"></script> -->
+    <!-- 富文本 编辑器 -->
+  <script src="/static/js/medium-editor.min.js"></script>
   <script src="/static/js/auth.js"></script>
+  <script src="/static/js/article.js"></script>
 </body>
 </html>

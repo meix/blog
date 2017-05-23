@@ -2,12 +2,14 @@ package controllers
 
 import (
 	. "blog/models"
+
 	"github.com/astaxie/beego"
 )
 
 type ApplicationController struct {
 	beego.Controller
-	isLogin bool
+	isLogin      bool
+	current_user User
 }
 
 func (this *ApplicationController) Prepare() {
@@ -16,13 +18,20 @@ func (this *ApplicationController) Prepare() {
 		this.isLogin = false
 	} else {
 		this.isLogin = true
-		user, err := GetUser(1)
+		user, err := GetUser(user_id.(int))
 		if err == nil {
-			this.Data["user"] = user
+			this.current_user = user
+			this.Data["currentUser"] = user
 		}
 	}
 	this.Data["isLogin"] = this.isLogin
+}
 
+// 如果没有登陆 跳转到登陆页面
+func (this *ApplicationController) RequireUser() {
+	if !this.isLogin {
+		this.Redirect("/login", 302)
+	}
 }
 
 func (this *ApplicationController) Go404() {

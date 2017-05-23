@@ -3,10 +3,9 @@ package controllers
 import (
 	. "blog/models"
 	"fmt"
-	"github.com/astaxie/beego"
 )
 
-// 登陆
+// 用户 登陆
 type LoginUserController struct {
 	// beego.Controller
 	ApplicationController
@@ -24,14 +23,15 @@ func (this *LoginUserController) Post() {
 	if err != nil {
 		fmt.Println("邮箱或密码错误,请重新输入：", err)
 		this.Redirect("/login", 302)
+	} else {
+		this.SetSession("user_id", user.Id)
+		this.Redirect("/", 302)
 	}
-	this.SetSession("user_id", user.Id)
-	this.Redirect("/", 302)
 }
 
-// 注册
+// 用户 注册
 type SignupUserController struct {
-	beego.Controller
+	ApplicationController
 }
 
 func (this *SignupUserController) Get() {
@@ -55,28 +55,34 @@ func (this *SignupUserController) Post() {
 	UserParams["name"] = name
 	UserParams["password"] = password
 
-	err := CreateUser(UserParams)
+	user_id, err := CreateUser(UserParams)
 	if err != nil {
 		fmt.Println("注册错误：", err)
 		this.Redirect("/signup", 302)
+	} else {
+		this.SetSession("user_id", int(user_id))
+		this.Redirect("/", 302)
+	}
+}
+
+type UserController struct {
+	ApplicationController
+}
+
+// 退出 登陆
+func (this *UserController) Signout() {
+	user_id := this.GetSession("user_id")
+	if user_id != nil {
+		this.DelSession("user_id")
 	}
 	this.Redirect("/", 302)
 }
 
-type UserController struct {
-	beego.Controller
-}
-
+// 个人页面
 func (this *UserController) Index() {
 	this.Data["Website"] = "beego.me"
 	this.Data["Email"] = "astaxie@gmail.com"
 
 	this.Layout = "layout/application.tpl"
 	this.TplName = "user/index.tpl"
-}
-
-func (this *UserController) Login() {
-
-	this.Layout = "layout/application.tpl"
-	this.TplName = "user/login.tpl"
 }

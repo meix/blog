@@ -7,29 +7,25 @@ import (
 	_ "github.com/go-sql-driver/mysql"
 	"golang.org/x/crypto/bcrypt"
 	// "reflect"
+	"time"
 )
 
 type User struct {
-	Id          int
-	Email       string
-	UserProfile *UserProfile `orm:"rel(one)"`
-	Password    string
-	Status      int
-	Created     int64
-	Changed     int64
-}
+	Id         int
+	Email      string    // 邮箱
+	Password   string    // 密码
+	Avatar     string    // 头像
+	Sex        string    // 1:男， 2：女
+	Phone      int64     // 手机号
+	Address    string    // 住址
+	Education  string    // 教育
+	Name       string    // 真实姓名
+	Introduce  string    // 个人简介
+	LoginIp    string    // 登录ip
+	CreateTime time.Time // 创建时间
 
-type UserProfile struct {
-	Id       int
-	Realname string
-	Sex      int
-	Birth    string
-	Email    string
-	Phone    string
-	Address  string
-	Hobby    string
-	Intro    string
-	User     *User `orm:"reverse(one)"`
+	Articles []*Article `orm:"reverse(many)"` // fk 的反向关系
+	Comments []*Comment `orm:"reverse(many)"` // fk 的反向关系
 }
 
 func (this *User) TableName() string {
@@ -37,31 +33,24 @@ func (this *User) TableName() string {
 }
 
 func init() {
-	orm.RegisterModel(new(User), new(UserProfile))
+	orm.RegisterModel(new(User))
 }
 
 // 创建用户
-func CreateUser(params map[string]string) interface{} {
+func CreateUser(params map[string]string) (int64, error) {
 	user_password, err := GetPassword(params["password"])
 	if err != nil {
-		return err
+		return 0, err
 	}
 	o := orm.NewOrm()
 	o.Using("default")
-
-	user_profile := new(UserProfile)
-	user_profile.Realname = params["name"]
-	user_profile.Email = params["email"]
-
 	user := new(User)
-	user.UserProfile = user_profile
 	user.Email = params["email"]
 	user.Password = user_password
-
-	o.Insert(user_profile)
-	o.Insert(user)
-	// fmt.Println(id)
-	return err
+	user.Name = params["name"]
+	user.CreateTime = time.Now()
+	id, err := o.Insert(user)
+	return id, err
 }
 
 // 用户登陆验证
