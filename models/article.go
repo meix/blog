@@ -1,7 +1,7 @@
 package models
 
 import (
-	// "fmt"
+	"fmt"
 	"github.com/astaxie/beego/orm"
 	_ "github.com/go-sql-driver/mysql"
 	"time"
@@ -34,20 +34,22 @@ func (this *Article) GetArticle(id int) *Article {
 	return this
 }
 
-func CreateArticle(params map[string]string, user_id int) bool {
+func CreateArticle(params map[string]string) bool {
 	o := orm.NewOrm()
 	o.Using("default")
-
-	user := User{Id: user_id}
-
 	article := new(Article)
+
 	article.Title = params["title"]
 	article.Keywords = params["keywords"]
 	article.Summary = params["summary"]
 	article.Content = params["content"]
-	article.User = user
+	article.CreateTime = time.Now()
+	article.User = 1
 
 	_, err := o.Insert(article)
+
+	fmt.Printf("错误是", err)
+
 	if err != nil {
 		return false
 	}

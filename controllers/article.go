@@ -47,7 +47,7 @@ func (this *ArticleController) Get() {
 
 func (this *ArticleController) Post() {
 	this.RequireUser()
-	user_id := this.GetSession("user_id").(int)
+	// user_id := this.GetSession("user_id").(int)
 
 	title := this.GetString("title")
 	keywords := this.GetString("keywords")
@@ -60,11 +60,13 @@ func (this *ArticleController) Post() {
 	ArticleParams["summary"] = summary
 	ArticleParams["content"] = content
 
-	if CreateArticle(ArticleParams, user_id) {
-		this.Redirect("/article/personal", 301)
-	} else {
-		this.Redirect("/article", 301)
-	}
+	CreateArticle(ArticleParams)
+
+	// if CreateArticle(ArticleParams, user_id) {
+	this.Redirect("/article/personal", 301)
+	// } else {
+	// 	this.Redirect("/article", 301)
+	// }
 }
 
 // 私有的博客
